@@ -2,7 +2,7 @@ import { fetchCoinHistory } from "./api";
 import { useQuery } from "react-query";
 import ReactApexChart from "react-apexcharts";
 
-interface IHistorical {
+export interface IHistorical {
   time_open: string;
   time_close: string;
   open: number;
@@ -12,62 +12,69 @@ interface IHistorical {
   volume: number;
   market_cap: number;
 }
-interface ChartProps {
+
+export interface ChartProps {
   coinId: string;
+  theme?: boolean;
 }
-export const Chart = ({ coinId }: ChartProps) => {
-  const { isLoading, data } = useQuery<IHistorical[]>(["ohlcv", coinId], () =>
-    fetchCoinHistory(coinId)
+
+export const fixpoint2 = (num: number) => {
+  return num.toFixed(2);
+};
+
+export const Chart = ({ coinId, theme }: ChartProps) => {
+  const { isLoading, data } = useQuery<IHistorical[]>(
+    ["ohlcv", coinId],
+    () => fetchCoinHistory(coinId),
+    {
+      refetchInterval: 5000,
+    }
   );
+
   return (
     <div>
       {isLoading ? (
         "Loading chart..."
       ) : (
         <ReactApexChart
-          type="line"
+          type="candlestick"
           series={[
             {
               name: "Price",
-              data: data?.map(price => price.close) ?? [],
+              data:
+                data?.map(price => {
+                  return {
+                    x: price.time_open.slice(2, 10),
+                    y: [
+                      fixpoint2(price.open),
+                      fixpoint2(price.high),
+                      fixpoint2(price.low),
+                      fixpoint2(price.close),
+                    ],
+                  };
+                }) ?? [],
             },
           ]}
           options={{
-            theme: { mode: "dark" },
+            theme: {
+              mode: theme ? "dark" : "light",
+            },
             chart: {
-              height: 300,
+              height: 350,
               width: 500,
-              toolbar: {
-                show: false,
-              },
               background: "transparent",
             },
-            grid: { show: false },
-            stroke: { curve: "smooth", width: 2 },
+            title: {
+              text: "CandleStick Chart",
+              align: "left",
+            },
             yaxis: {
-              show: false,
-            },
-            xaxis: {
-              axisBorder: { show: false },
-              axisTicks: { show: false },
               labels: {
-                show: false,
-              },
-              type: "datetime",
-              categories: data?.map(price => price.time_close),
-            },
-            fill: {
-              type: "gradient",
-              gradient: { gradientToColors: ["#0be881"], stops: [0, 100] },
-            },
-            colors: ["#0fbcf9"],
-            tooltip: {
-              y: {
-                formatter: value => `$${value.toFixed(2)}`,
+                formatter: value => value.toFixed(),
               },
             },
           }}
-        ></ReactApexChart>
+        />
       )}
     </div>
   );

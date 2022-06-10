@@ -12,7 +12,7 @@ const Container = styled.div`
 `;
 
 const Header = styled.header`
-  height: 10vh;
+  height: 15vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,16 +21,15 @@ const Header = styled.header`
 const CoinsList = styled.ul``;
 
 const Coin = styled.li`
-  background-color: white;
-  color: ${props => props.theme.textColor};
-  padding: 20px;
+  background-color: ${props => props.theme.boxColor};
+  color: ${props => props.theme.bgColor};
   border-radius: 15px;
   margin-bottom: 10px;
   a {
+    padding: 20px;
     align-items: center;
     transition: color 0.2s ease-in;
     display: flex;
-    padding: 20px;
   }
   &:hover {
     a {
@@ -41,7 +40,7 @@ const Coin = styled.li`
 
 const Title = styled.h1`
   font-size: 48px;
-  color: ${props => props.theme.accentColor};
+  color: ${props => props.theme.titleColor};
 `;
 
 const Img = styled.img`
@@ -49,24 +48,23 @@ const Img = styled.img`
   height: 35px;
   margin-right: 10px;
 `;
-interface ICoin {
-  id: string;
-  name: string;
-  symbol: string;
-  rank: number;
-  is_new: boolean;
-  is_active: boolean;
-  type: string;
-}
 
 const Loader = styled.span`
   text-align: center;
   display: block;
 `;
 
-interface ICoinsProps {
-  toggleDark: () => void;
-}
+const coins = {
+  id: "btc-bitcoin",
+  name: "Bitcoin",
+  symbol: "BTC",
+  rank: 1,
+  is_new: false,
+  is_active: true,
+  type: "coin",
+};
+
+type ICoin = typeof coins;
 
 const Coins = () => {
   const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
@@ -77,7 +75,6 @@ const Coins = () => {
       </Helmet>
       <Header>
         <Title>코인</Title>
-        <button>Toggle Mode</button>
       </Header>
       {isLoading ? (
         <Loader>"Loading..."</Loader>
@@ -85,7 +82,7 @@ const Coins = () => {
         <CoinsList>
           {data?.slice(0, 100).map(coin => (
             <Coin key={coin.id}>
-              <Link to={`/${coin.id}`} state={{ name: coin.name }}>
+              <Link to={`/${coin.id}`} state={coin.name}>
                 <Img
                   src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}
                 />
@@ -98,5 +95,4 @@ const Coins = () => {
     </Container>
   );
 };
-
 export default Coins;

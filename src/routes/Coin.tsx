@@ -1,29 +1,59 @@
+import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
-import { Routes, Route, useLocation, useParams, useMatch } from "react-router";
-import { Link } from "react-router-dom";
+import {
+  Link,
+  Route,
+  Routes,
+  useLocation,
+  useMatch,
+  useParams,
+} from "react-router-dom";
 import styled from "styled-components";
+import { themeProps } from "../App";
 import { fetchCoinInfo, fetchCoinTickers } from "./api";
 import Chart from "./Chart";
 import Price from "./Price";
-import { Helmet } from "react-helmet";
+
+const Overview = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  border-radius: 10px;
+`;
+const OverviewItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  span:first-child {
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+`;
+const Description = styled.p`
+  margin: 20px 0px;
+`;
 
 const Container = styled.div`
   padding: 0px 20px;
   max-width: 480px;
-  margin: 0 auto;
+  margin: 20px auto;
 `;
 
 const Header = styled.header`
-  height: 10vh;
+  margin-top: 10px;
+  height: 15vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px;
 `;
 
 const Title = styled.h1`
   font-size: 48px;
-  color: ${props => props.theme.accentColor};
+  color: ${props => props.theme.titleColor};
 `;
 
 const Loader = styled.span`
@@ -53,13 +83,30 @@ const Tab = styled.span<{ isActive: boolean }>`
   }
 `;
 
-interface RouteState {
-  state: { name: string };
-}
+const BackButton = styled.button`
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 15px;
+  background-color: ${props => props.theme.buttonColor};
+  text-decoration: none;
+  color: ${props => props.theme.textColor};
+  &:hover {
+    color: ${props => props.theme.accentColor};
+  }
+  border: none;
+  outline: 0;
+  margin: 10px 0px 0px 0px;
+`;
 
-type RouteParams = {
+type Params = {
   coinId: string;
 };
+
+interface RouteState {
+  state: {
+    name: string;
+  };
+}
 
 interface InfoData {
   id: string;
@@ -95,8 +142,10 @@ interface PriceData {
   last_updated: string;
   quotes: {
     USD: {
-      ath_date: number;
+      ath_date: string;
+      ath_price: number;
       market_cap: number;
+      market_cap_change_24h: number;
       percent_change_1h: number;
       percent_change_1y: number;
       percent_change_6h: number;
@@ -114,61 +163,19 @@ interface PriceData {
   };
 }
 
-const Overview = styled.div`
-  display: flex;
-  justify-content: space-between;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 10px 20px;
-  border-radius: 10px;
-`;
-const OverviewItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  span:first-child {
-    font-size: 10px;
-    font-weight: 400;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-`;
-const Description = styled.p`
-  margin: 20px 0px;
-`;
-
-function Coin() {
-  const { coinId } = useParams() as RouteParams;
+const Coin = ({ theme }: themeProps) => {
+  const { coinId } = useParams() as Params;
   const { state } = useLocation() as RouteState;
-  const priceMatch = useMatch("/:coinId/price");
-  const chartMatch = useMatch("/:coinId/chart");
   const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
     ["info", coinId],
     () => fetchCoinInfo(coinId)
   );
   const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
     ["tickers", coinId],
-    () => fetchCoinTickers(coinId),
-    {
-      refetchInterval: 5000,
-    }
+    () => fetchCoinTickers(coinId)
   );
-
-  // const [loading, setLoading] = useState(true);
-  // const [info, setInfo] = useState<InfoData>();
-  // const [priceInfo, setPriceInfo] = useState<PriceData>();
-  // useEffect(() => {
-  //   (async () => {
-  //     const infoData = await (
-  //       await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-  //     ).json();
-  //     const priceData = await (
-  //       await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-  //     ).json();
-  //     setInfo(infoData);
-  //     setPriceInfo(priceData);
-  //     setLoading(false);
-  //   })();
-  // }, [coinId]);
+  const priceMatch = useMatch("/:coinId/price");
+  const chartMatch = useMatch("/:coinId/chart");
   const loading = infoLoading || tickersLoading;
   return (
     <Container>
@@ -177,13 +184,16 @@ function Coin() {
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </title>
       </Helmet>
+      <BackButton>
+        <Link to={`/`}>⬅️ back</Link>
+      </BackButton>
       <Header>
         <Title>
           {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
         </Title>
       </Header>
       {loading ? (
-        <Loader>"Loading..."</Loader>
+        <Loader>Loading...</Loader>
       ) : (
         <>
           <Overview>
@@ -193,11 +203,11 @@ function Coin() {
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
-              <span>${infoData?.symbol}</span>
+              <span>{infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Price:</span>
-              <span>{tickersData?.quotes.USD.price}</span>
+              <span>Price live:</span>
+              <span>${tickersData?.quotes.USD.price.toFixed(2)}</span>
             </OverviewItem>
           </Overview>
           <Description>{infoData?.description}</Description>
@@ -211,6 +221,7 @@ function Coin() {
               <span>{tickersData?.max_supply}</span>
             </OverviewItem>
           </Overview>
+
           <Tabs>
             <Tab isActive={chartMatch !== null}>
               <Link to={`/${coinId}/chart`}>Chart</Link>
@@ -219,13 +230,17 @@ function Coin() {
               <Link to={`/${coinId}/price`}>Price</Link>
             </Tab>
           </Tabs>
+
           <Routes>
-            <Route path="chart" element={<Chart coinId={coinId} />} />
-            <Route path="price" element={<Price />} />
+            <Route
+              path="chart"
+              element={<Chart coinId={coinId} theme={theme} />}
+            />
+            <Route path="price" element={<Price coinId={coinId} />} />
           </Routes>
         </>
       )}
     </Container>
   );
-}
+};
 export default Coin;
