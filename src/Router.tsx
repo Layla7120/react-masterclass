@@ -9,7 +9,6 @@ const Router = ({ theme }: themeProps) => {
       <Routes>
         <Route path={`${process.env.PUBLIC_URL}/`} element={<Coins />} />
         <Route path="/:coinId/*" element={<Coin theme={theme} />} />
-        {/* <Route path="/" element={<Coins />} /> */}
       </Routes>
     </BrowserRouter>
   );
