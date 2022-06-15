@@ -7,9 +7,7 @@ declare module "styled-components" {
     textColor: string;
     bgColor: string;
     accentColor: string;
-    tableLineColor: string;
     boxColor: string;
     buttonColor: string;
-    titleColor: string;
   }
 }
