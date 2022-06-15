@@ -2,7 +2,8 @@ import styled, { createGlobalStyle } from "styled-components";
 import ToDoList from "./components/ToDoList";
 
 const GlobalStyle = createGlobalStyle`
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Noto+Sans+KR:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Joan&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Joan&family=Noto+Sans+KR:wght@300;400&display=swap');
   html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -55,7 +56,7 @@ table {
 }
 body{
   font-weight: 300;
-  font-family: 'Montserrat', 'Noto Sans KR',sans-serif;
+  font-family: 'Joan','Noto Sans KR', sans-serif;
   background-color: ${props => props.theme.bgColor};
   color:${props => props.theme.textColor};
   line-height: 1.2;
