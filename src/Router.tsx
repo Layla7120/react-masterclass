@@ -5,7 +5,7 @@ import Coins from "./routes/Coins";
 
 const Router = ({ theme }: themeProps) => {
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <BrowserRouter>
       <Routes>
         <Route path="/:coinId/*" element={<Coin theme={theme} />} />
         <Route path="/" element={<Coins />} />
