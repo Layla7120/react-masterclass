@@ -1,5 +1,5 @@
-import styled, { createGlobalStyle } from "styled-components";
-import ToDoList from "./components/ToDoList";
+import { createGlobalStyle } from "styled-components";
+import ToDoList from "./ToDoList";
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Joan&display=swap');
@@ -65,52 +65,6 @@ a{
   text-decoration: none;
   color:inherit;
 }
-`;
-
-export const H1 = styled.h1`
-  margin: 80px auto 20px;
-  padding: 10px;
-  font-weight: bold;
-  text-align: center;
-  font-size: 40px;
-  text-shadow: 2px 2px 2px;
-  border-bottom: solid;
-`;
-
-export const H2 = styled.h2`
-  padding: 10px;
-  font-weight: 500;
-  font-size: 20px;
-`;
-export const ToDoListDiv = styled.div`
-  text-align: center;
-  font-weight: 400;
-`;
-
-export const Button = styled.button`
-  background-color: ${props => props.theme.buttonColor};
-  padding: auto 8px;
-  border: 1px solid;
-  margin-left: 9px;
-  font-size: 13px;
-`;
-
-export const UlBox = styled.div`
-  background-color: ${props => props.theme.boxColor};
-  padding: 10px;
-  margin: 15px auto;
-  width: 300px;
-`;
-
-export const Select = styled.select`
-  background: #f8efba;
-  font-size: 15px;
-  padding: 10px;
-  margin: 15px auto;
-`;
-
-export const Input = styled.input`
-  font-size: 15px;
 `;
 
 function App() {
