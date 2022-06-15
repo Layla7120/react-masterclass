@@ -2,6 +2,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import ToDoList from "./components/ToDoList";
 
 const GlobalStyle = createGlobalStyle`
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Nanum+Gothic:wght@400;700&display=swap');
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -31,6 +32,9 @@ footer, header, hgroup, main, menu, nav, section {
 *[hidden] {
     display: none;
 }
+body {
+  line-height: 1;
+}
 menu, ol, ul {
   list-style: none;
 }
@@ -46,19 +50,18 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
-*{
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400&display=swap');
-  font-family: 'Montserrat', 'Noto Sans KR', sans-serif !important;
+* {
   box-sizing: border-box;
 }
-body{
+body {
   font-weight: 300;
-  background-color: ${props => props.theme.bgColor};
+  background-color:${props => props.theme.bgColor};
+  font-family: 'Montserrat','Nanum Gothic', sans-serif;
   color:${props => props.theme.textColor};
   line-height: 1.2;
 }
-a{
-  text-decoration: none;
+a {
+  text-decoration:none;
   color:inherit;
 }
 `;
@@ -75,12 +78,10 @@ export const H1 = styled.h1`
 
 export const H2 = styled.h2`
   padding: 10px;
-  font-weight: 500;
   font-size: 20px;
 `;
 export const ToDoListDiv = styled.div`
   text-align: center;
-  font-weight: 400;
 `;
 
 export const Button = styled.button`
