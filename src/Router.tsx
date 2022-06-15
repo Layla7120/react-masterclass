@@ -7,8 +7,9 @@ const Router = ({ theme }: themeProps) => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path={`${process.env.PUBLIC_URL}/`} element={<Coins />} />
         <Route path="/:coinId/*" element={<Coin theme={theme} />} />
-        <Route path="/" element={<Coins />} />
+        {/* <Route path="/" element={<Coins />} /> */}
       </Routes>
     </BrowserRouter>
   );
